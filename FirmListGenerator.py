@@ -2,7 +2,7 @@
 
 import csv
 from ContentFinder import get_content
-from scrape_version1 import get_article_pages
+from ArticleGetter import get_article_pages
 
 
 # firm_list: the name of original firm_list csv file
