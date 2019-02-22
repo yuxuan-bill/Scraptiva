@@ -11,10 +11,10 @@ search_criteria = {
                 'The Wall Street Journal'],
 }
 
-chrome_webdriver_location = "/Users/luyuxuan/Desktop/scrape/chromedriver"
+chrome_webdriver_location = 'C:/Users/yukai/Desktop/Research/Scraptiva/chromedriver.exe'
 
-firm_list_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/short_firmlist.csv"
+firm_list_location = "C:/Users/yukai/Desktop/Research/Scraptiva/short_firmlist.csv"
 
-output_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/test_result.csv"
+output_location = "C:/Users/yukai/Desktop/Research/Scraptiva/test_result.csv"
 
 headless = False

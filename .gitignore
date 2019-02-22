@@ -1,3 +1,5 @@
 venv/
 experiment/
 __pycache__/
+.idea/
+*.exe

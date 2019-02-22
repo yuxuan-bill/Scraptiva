@@ -44,7 +44,7 @@ def search(conm, role):
     # Adjust as needed
     options = webdriver.ChromeOptions()
     options.add_experimental_option("detach", True)
-    if src.config.headless:
+    if not src.config.headless:
         options.add_argument("--headless")
     path = src.config.chrome_webdriver_location
     try:
@@ -56,7 +56,7 @@ def search(conm, role):
     # open the website
     # run into a bug if the website didn't respond in 10s (update later)
     driver.get(url)
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(20)
 
     # Enter elements in search box
     try:
@@ -83,9 +83,14 @@ def search(conm, role):
     # Note: may run into a bug (update later)
     for source in sources:
         driver.find_element_by_xpath("//td[@id = 'scTab']/div[@class = 'pnlTabArrow']").click()
+        sleep(1)
         driver.find_element_by_id('scTxt').send_keys(source)
         driver.find_element_by_id('scLkp').click()
-        element = WebDriverWait(driver,10).until(find)
+        try:
+            element = WebDriverWait(driver,20).until(find)
+        except exceptions.TimeoutException:
+            error_message("Error, cannot find the source named " + source)
+            sys.exit()
         element.click() # may have a bug, still testing
         driver.find_element_by_class_name('mnuItm').click()
         driver.find_element_by_xpath("//td[@id = 'scTab']/div[@class = 'pnlTabArrow']").click()
@@ -94,14 +99,15 @@ def search(conm, role):
     # The default is the first option that appears on the list
     # Note: may run into a bug  (update later)
     driver.find_element_by_xpath("//td[@id = 'coTab']/div[@class = 'pnlTabArrow']").click()
+    sleep(1)
     driver.find_element_by_id('coTxt').send_keys(conm)
     driver.find_element_by_id('coLkp').click()
-    element = WebDriverWait(driver,10).until(find)
     try:
-        element.click() # may have a bug, still testing
-    except exceptions.NoSuchElementException:
+        element = WebDriverWait(driver, 20).until(find)
+    except exceptions.TimeoutException:
         error_message("Error, cannot find the company")
         sys.exit()
+    element.click()  # may have a bug, still testing
     driver.find_element_by_xpath("//td[@id = 'coTab']/div[@class = 'pnlTabArrow']").click()
 
     # Search
@@ -109,7 +115,7 @@ def search(conm, role):
     # print the current url
     sleep(1)
     driver.find_element_by_xpath("//li[@class = 'btn']/input[@value = 'Search']").click()
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(20)
     current_html = driver.page_source
 
     # html: the html page of search result
@@ -128,6 +134,7 @@ def search(conm, role):
     for link in links:
         driver.get(link)
         result.append((link, driver.page_source))
+        sleep(5) # Don't delete
     driver.quit()
     return result
 
