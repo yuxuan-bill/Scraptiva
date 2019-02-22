@@ -21,29 +21,36 @@ from selenium.common import exceptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium import webdriver
 from bs4 import BeautifulSoup
+import src.config
+
 
 # Input: information needed for search
-# Output: A list of html files. Null if no results
+# Output: A list of tuples with (link, html file). Empty list if no result.
 def search(conm, role):
-    sources = ['The New York Times', 'Financial Times', 'The economist', 'Forbes', 'Fortune.com', 'The Times',
-               'The Wall Street Journal']
+    print("Processing company " + conm + " with role " + role + "...")
+    sources = src.config.search_criteria["sources"]
     url = 'http://guides.lib.uw.edu/factiva'
+    if role == 'CEO':
+        role = 'CEO or (Chief Executive)'
+    else:  # conm = 'CFO'
+        role = 'CFO or (Chief Financial)'
 
     # Error messages for unexpected bugs
-    def error_message():
+    def error_message(message):
+        print(message)
         print("Current progress: " + conm + ", " + role)
 
     # initiate the driver
     # Adjust as needed
     options = webdriver.ChromeOptions()
     options.add_experimental_option("detach", True)
-    # options.add_argument("--headless")
-    path = 'C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe'
+    if src.config.headless:
+        options.add_argument("--headless")
+    path = src.config.chrome_webdriver_location
     try:
         driver = webdriver.Chrome(executable_path = path,chrome_options = options)
     except exceptions.WebDriverException:
-        print("Error: Cannot locate your Google driver. Please edit the path.")
-        error_message()
+        error_message("Error: Cannot locate your Google driver. Please edit the path.")
         sys.exit()
 
     # open the website
@@ -55,18 +62,13 @@ def search(conm, role):
     try:
         driver.find_element_by_class_name('ace_text-input').send_keys(role)
     except exceptions.NoSuchElementException:
-        print("Timeout, unable to open the website due to internet error or login error.")
-        error_message()
+        error_message("Timeout, unable to open the website due to internet error or login error.")
         sys.exit()
 
     # Enter the date range
     driver.find_element_by_xpath("//select[@name='dr']/option[@value='Custom']").click()
-    driver.find_element_by_name('frm').send_keys(11)
-    driver.find_element_by_name('frd').send_keys(1)
-    driver.find_element_by_name('fry').send_keys(2014)
-    driver.find_element_by_name('tom').send_keys(12)
-    driver.find_element_by_name('tod').send_keys(31)
-    driver.find_element_by_name('toy').send_keys(2018)
+    for key, value in src.config.search_criteria['time'].items():
+        driver.find_element_by_name(key).send_keys(value)
 
     # For StaleElementReferenceException in the Source and Company
     def find(driver):
@@ -98,8 +100,7 @@ def search(conm, role):
     try:
         element.click() # may have a bug, still testing
     except exceptions.NoSuchElementException:
-        print("Error, cannot find the company")
-        error_message()
+        error_message("Error, cannot find the company")
         sys.exit()
     driver.find_element_by_xpath("//td[@id = 'coTab']/div[@class = 'pnlTabArrow']").click()
 
@@ -124,19 +125,14 @@ def search(conm, role):
 
     links = get_article_links(current_html)
     result = []
-    if not links:
-        return result
-    else:
-        for link in links:
-            driver.get(link)
-            result.append(driver.page_source)
-            sleep(5)
-        return result
+    for link in links:
+        driver.get(link)
+        result.append((link, driver.page_source))
+    driver.quit()
+    return result
 
 # An example of the materials for demo
 # conm = 'AAR CORP'
 # role = 'CEO or (Chief Executive)'
 # results = search(conm,role)
 # print(results)
-
-
