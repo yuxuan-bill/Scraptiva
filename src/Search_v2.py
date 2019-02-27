@@ -70,6 +70,9 @@ def search(conm, role):
     for key, value in src.config.search_criteria['time'].items():
         driver.find_element_by_name(key).send_keys(value)
 
+    # Choose the Duplicate (Identical)
+    driver.find_element_by_xpath("//select[@name='isrd']/option[@value='High']").click()
+
     # For StaleElementReferenceException in the Source and Company
     def find(driver):
         element = driver.find_element_by_class_name('mnuItm')
