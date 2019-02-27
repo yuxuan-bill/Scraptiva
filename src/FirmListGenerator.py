@@ -16,9 +16,10 @@ def generate_firm_list(firm_list_file, result_file_name):
             result_writer.writeheader()
             for entry in firm_list_reader:
                 article_list = get_article_pages(entry['conm'], entry['Role'][0:3])
-                for (link, article) in article_list:
+                if not article_list:
+                    result_writer.writerow(entry)
+                for article in article_list:
                     article_info = get_content(article)
-                    entry['Source'] = link
                     for key in article_info:
                         entry[key] = article_info[key]
                     result_writer.writerow(entry)
