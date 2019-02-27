@@ -17,4 +17,5 @@ firm_list_location = "C:/Users/yukai/Desktop/Research/Scraptiva/short_firmlist.c
 
 output_location = "C:/Users/yukai/Desktop/Research/Scraptiva/test_result.csv"
 
+# True for demo
 headless = False
