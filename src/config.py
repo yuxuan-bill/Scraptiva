@@ -1,11 +1,11 @@
 search_criteria = {
     'time': {  # from mm/dd/yyyy to mm/dd/yyyy
-        'frm': 11,
+        'frm': 1,
         'frd': 1,
-        'fry': 2014,
+        'fry': 2013,
         'tom': 12,
         'tod': 31,
-        'toy': 2018
+        'toy': 2017
     },
     'sources': ['The New York Times', 'Financial Times', 'The economist', 'Forbes', 'Fortune.com', 'The Times',
                 'The Wall Street Journal'],
