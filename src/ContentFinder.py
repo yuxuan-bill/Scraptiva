@@ -18,6 +18,7 @@ def get_content(html):
     article_info["Title"] = header[1].find("span").string
     article_info["Date"] = header[3].string
     article_info["Time"] = header[4].string
+    article_info["Source"] = header[5].string
     content = list(paragraph.getText()
                    for paragraph in
                    article_container.findAll("p", {"class": "articleParagraph enarticleParagraph"}))
@@ -26,4 +27,4 @@ def get_content(html):
 
 
 if __name__ == "__main__":
-    print(get_content(open("/Users/luyuxuan/Desktop/scrape/Scraptiva/factiva_article.html", 'r'))['Content'])
+    print(get_content(open("/Users/luyuxuan/Desktop/scrape/Scraptiva/factiva_article.html", 'r')))

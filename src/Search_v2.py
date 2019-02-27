@@ -25,7 +25,7 @@ import src.config
 
 
 # Input: information needed for search
-# Output: A list of tuples with (link, html file). Empty list if no result.
+# Output: A list html files. Empty list if no result.
 def search(conm, role):
     print("Processing company " + conm + " with role " + role + "...")
     sources = src.config.search_criteria["sources"]
@@ -127,7 +127,7 @@ def search(conm, role):
     result = []
     for link in links:
         driver.get(link)
-        result.append((link, driver.page_source))
+        result.append(driver.page_source)
     driver.quit()
     return result
 
