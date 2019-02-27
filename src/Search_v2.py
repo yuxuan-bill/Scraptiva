@@ -33,7 +33,7 @@ def search(conm, role):
     if role == 'CEO':
         role = 'CEO or (Chief Executive)'
     else:  # conm = 'CFO'
-        role = 'CFO or (Chief Financial)'
+        role = 'CFO or (Chief Financ)'
 
     # Error messages for unexpected bugs
     def error_message(message):
