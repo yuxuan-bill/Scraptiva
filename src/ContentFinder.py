@@ -2,12 +2,15 @@
 # 1. its date,
 # 2. time,
 # 3. title,
-# 4. and content.
+# 4. source,
+# 5. and content.
 
 from bs4 import BeautifulSoup
 from bs4 import element
 
 
+# WARNING: potential source of bug, since each article may have a different html format, and
+#          I haven't tested thoroughly on this.
 # html: a string that stores the page source code
 # return: a dictionary of content information about the article, in the form
 #       {Date: --, Time: --, Title: --, Source: --, Content: --}, paragraphs are separated using ' | '
@@ -15,7 +18,8 @@ def get_content(html):
     soup = BeautifulSoup(html, 'html.parser')
     article_container = soup.find("div", {"class": "article enArticle"})
     header = article_container.findAll("div", {"class": None})
-    print(header)
+    # print(header)
+
     # sometimes Factiva article pages vary in format, this solves the problem that article
     # title is not the first div found
     if not header[0].get("id"):

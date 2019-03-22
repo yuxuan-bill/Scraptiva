@@ -5,7 +5,6 @@ from src.ContentFinder import get_content
 from src.ArticleGetter import get_article_pages
 from src.SeleniumActions import *
 import src.config
-import sys
 
 
 # firm_list: the name of original firm_list csv file
@@ -16,6 +15,7 @@ import sys
 def generate_firm_list(firm_list_file, result_file_name):
 
     # login Factiva and only use one webdriver to increase speed
+    # may result in a bug if login fails
     driver = get_chrome_driver()
     driver.get('http://guides.lib.uw.edu/factiva')
     sleep(5)
@@ -35,10 +35,10 @@ def generate_firm_list(firm_list_file, result_file_name):
                         for key in article_info:
                             filled_entry[key] = article_info[key]
                         entry_list.append(filled_entry)
-                except Exception as e:
+                except Exception as err:
                     entry["Source"] = "-----ERROR WHEN PROCESSING-----"
                     result_writer.writerow(entry)
-                    sys.stderr.write(str(e))
+                    print(err)
                 else:
                     for filled_entry in entry_list:
                         result_writer.writerow(filled_entry)
