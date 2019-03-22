@@ -7,15 +7,19 @@ search_criteria = {
         'tod': 31,
         'toy': 2017
     },
-    'sources': ['The New York Times', 'Financial Times', 'The economist', 'Forbes', 'Fortune.com', 'The Times',
+    'sources': ['The New York Times', 'Financial Times', 'The economist', 'Forbes', 'Fortune', 'The Times',
                 'The Wall Street Journal'],
 }
 
-chrome_webdriver_location = 'C:/Users/yukai/Desktop/Research/Scraptiva/chromedriver.exe'
+implicit_wait_time = 10
 
-firm_list_location = "C:/Users/yukai/Desktop/Research/Scraptiva/short_firmlist.csv"
+#  C:/Users/yukai/Desktop/Research/Scraptiva/chromedriver.exe
+chrome_webdriver_location = '/Users/luyuxuan/Desktop/scrape/chromedriver'
 
-output_location = "C:/Users/yukai/Desktop/Research/Scraptiva/test_result.csv"
+# C:/Users/yukai/Desktop/Research/Scraptiva/short_firmlist.csv
+firm_list_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/short_firmlist.csv"
 
-# True for demo
+# C:/Users/yukai/Desktop/Research/Scraptiva/test_result.csv
+output_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/test_result.csv"
+
 headless = False

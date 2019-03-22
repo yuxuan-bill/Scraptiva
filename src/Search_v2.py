@@ -44,7 +44,7 @@ def search(conm, role):
     # Adjust as needed
     options = webdriver.ChromeOptions()
     options.add_experimental_option("detach", True)
-    if not src.config.headless:
+    if src.config.headless:
         options.add_argument("--headless")
     path = src.config.chrome_webdriver_location
     try:
@@ -60,7 +60,7 @@ def search(conm, role):
 
     # Enter elements in search box
     try:
-        driver.find_element_by_class_name('ace_text-input').send_keys(role)
+        driver.find_element_by_name('ftx').send_keys(role)
     except exceptions.NoSuchElementException:
         error_message("Timeout, unable to open the website due to internet error or login error.")
         sys.exit()
