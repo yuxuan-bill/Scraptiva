@@ -12,12 +12,10 @@ import json
 #
 # This function processes each (company, role) at once, if an error occurs, it records the error in result csv file
 # and go on with next company and role to process.
-def generate_firm_list(firm_list, driver):
+def generate_firm_list(process_list, driver):
     with open(config.output_location, "a+", 1) as result:
-        firm_list_reader = csv.DictReader(firm_list)
-        result_writer = csv.DictWriter(result, fieldnames=firm_list_reader.fieldnames)
-        result_writer.writeheader()
-        for entry in firm_list_reader:
+        result_writer = csv.DictWriter(result, csv.DictReader(result).fieldnames)
+        for entry in process_list:
             try:
                 article_list = get_article_pages(driver, entry['conm'], entry['Role'][0:3])
                 entry_list = list()
@@ -33,10 +31,8 @@ def generate_firm_list(firm_list, driver):
                     status_dict["error_list"].append(entry)
                     json.dump(status_dict, status_file)
                 print(err)
-                return 1
             else:
                 for filled_entry in entry_list:
                     result_writer.writerow(filled_entry)
                 if not entry_list:  # no articles for this role of company
                     result_writer.writerow(entry)
-    return 0

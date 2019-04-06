@@ -2,6 +2,7 @@ import csv
 import json
 from src.SeleniumActions import *
 from src.FirmListGenerator import generate_firm_list
+import os
 
 
 # Process several entries in the given firm list, the exact number of entries to process is specified in config.
@@ -29,6 +30,17 @@ def get_process_list():
     return process_list
 
 
+# initiate files to start with
+def init_process():
+    with open(config.firm_list_location, 'r') as firm_list:
+        firm_list_reader = csv.DictReader(firm_list)
+        with open(config.scrape_status_location, 'w') as status_file:
+            json.dump({"next": next(firm_list_reader), "error_list": []}, status_file)
+        with open(config.output_location, 'w') as output_file:
+            output_writer = csv.DictWriter(output_file, firm_list_reader.fieldnames)
+            output_writer.writeheader()
+
+
 # Start the scraping process. The workflow is as the following:
 # for 0 : process_times:
 #     try re-scrape entries that led to errors in last scrape for 5 times
@@ -36,6 +48,8 @@ def get_process_list():
 #         exit
 #     process entries_to_process entries
 def process():
+    if not os.path.isfile(config.scrape_status_location):
+        init_process()
 
     # login Factiva and only use one webdriver to increase speed
     # may result in a bug if login fails
@@ -44,14 +58,14 @@ def process():
     sleep(5)
 
     for _ in range(config.process_times):
-        with open(config.scrape_status_location, 'w') as status:
+        with open(config.scrape_status_location, 'w') as status_file:
 
             # retrieve the error list and re-initiate the error list to be empty
-            status_dict = json.loads(status.read())
+            status_dict = json.loads(status_file.read())
             error_list = status_dict["error_list"]
             status_dict["error_list"] = []
-            json.dump(status_dict, status)
-            status.flush()
+            json.dump(status_dict, status_file)
+            status_file.flush()
 
             attempt_count = 0
             while error_list:
@@ -66,4 +80,4 @@ def process():
             generate_firm_list(get_process_list(), driver)
     driver.quit()
 
-# TODO: 1. add init for scrape_status 2. add quit function
+# TODO: 2. add quit function 3. add IO redirection
