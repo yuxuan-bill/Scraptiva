@@ -13,13 +13,18 @@ search_criteria = {
 
 implicit_wait_time = 10
 
-#  C:/Users/yukai/Desktop/Research/Scraptiva/chromedriver.exe
 chrome_webdriver_location = '/Users/luyuxuan/Desktop/scrape/chromedriver'
 
-# C:/Users/yukai/Desktop/Research/Scraptiva/short_firmlist.csv
 firm_list_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/short_firmlist.csv"
 
-# C:/Users/yukai/Desktop/Research/Scraptiva/test_result.csv
 output_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/test_result.csv"
+
+scrape_log_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/src/log.txt"
+
+scrape_status_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/src/scrape_status.json"
+
+entries_to_process = 5  # need to be less than 20
+
+process_times = 3
 
 headless = False

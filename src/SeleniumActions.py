@@ -6,6 +6,9 @@ from time import sleep
 
 def get_chrome_driver():
     options = webdriver.ChromeOptions()
+    # the following two options are added so that headless can work on mac
+    options.add_argument("--window-size=1920,1080")
+    options.add_argument("--start-maximized")
     options.headless = True if config.headless else False
     driver = webdriver.Chrome(executable_path=config.chrome_webdriver_location, chrome_options=options)
     driver.implicitly_wait(config.implicit_wait_time)
