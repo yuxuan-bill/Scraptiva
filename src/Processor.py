@@ -10,21 +10,24 @@ import os
 def get_process_list():
     process_list = list()
     with open(config.firm_list_location, 'r') as firm_list:
-        with open(config.scrape_status_location, 'w+') as status_file:
-            reader = csv.DictReader(firm_list)
-            count = 0
-            record = False
+        with open(config.scrape_status_location, 'r') as status_file:
             status_dict = json.loads(status_file.read())
-            next_entry = status_dict["next"]
-            for entry in reader:
-                if entry["gvkey"] == next_entry[0] and entry['Role'] == next_entry[1][0:3]:
-                    record = True
-                if record and count <= config.entries_to_process:
-                    process_list.append(entry)
-                else:
-                    status_dict["next"] = entry
-                    json.dump(status_dict, status_file)
-                    break
+        reader = csv.DictReader(firm_list)
+        count = 0
+        record = False
+
+        next_entry = status_dict["next"]
+        for entry in reader:
+            if entry == next_entry:
+                record = True
+            if record and count <= config.entries_to_process:
+                process_list.append(entry)
+                count += 1
+            else:
+                status_dict["next"] = entry
+                with open(config.scrape_status_location, 'w') as status_writer:
+                    json.dump(status_dict, status_writer)
+                break
     # potential risk: if "next" in scrape_status is updated but for some reason the returned process_list
     # is not processed nor recorded in the error_list, these entries are lost.
     return process_list
@@ -34,7 +37,7 @@ def get_process_list():
 def init_process():
     with open(config.firm_list_location, 'r') as firm_list:
         firm_list_reader = csv.DictReader(firm_list)
-        with open(config.scrape_status_location, 'w') as status_file:
+        with open(config.scrape_status_location, 'w+') as status_file:
             json.dump({"next": next(firm_list_reader), "error_list": []}, status_file)
         with open(config.output_location, 'w') as output_file:
             output_writer = csv.DictWriter(output_file, firm_list_reader.fieldnames)
@@ -58,26 +61,26 @@ def process():
     sleep(5)
 
     for _ in range(config.process_times):
-        with open(config.scrape_status_location, 'w') as status_file:
 
-            # retrieve the error list and re-initiate the error list to be empty
+        # retrieve the error list and re-initiate the error list to be empty
+        with open(config.scrape_status_location, 'r') as status_file:
             status_dict = json.loads(status_file.read())
             error_list = status_dict["error_list"]
             status_dict["error_list"] = []
-            json.dump(status_dict, status_file)
-            status_file.flush()
+        with open(config.scrape_status_location, 'w') as status_writer:
+            json.dump(status_dict, status_writer)
 
-            attempt_count = 0
-            while error_list:
-                print("Processing " + str(len(error_list)) + " unfinished entries from last scrape...")
-                generate_firm_list(error_list, driver)
-                attempt_count += 1
-                if attempt_count >= 5:
-                    driver.quit()
-                    print("The error entries in last scrape cannot be scraped")
-                    return
-            print("Processing " + str(config.entries_to_process) + " entries...")
-            generate_firm_list(get_process_list(), driver)
+        attempt_count = 0
+        while error_list:
+            print("--------Processing " + str(len(error_list)) + " unfinished entries from last scrape--------\n")
+            generate_firm_list(error_list, driver)
+            attempt_count += 1
+            if attempt_count >= 5:
+                driver.quit()
+                print("The error entries in last scrape cannot be scraped.")
+                return
+        print("--------Processing " + str(config.entries_to_process) + " entries--------\n")
+        generate_firm_list(get_process_list(), driver)
     driver.quit()
 
 # TODO: 2. add quit function 3. add IO redirection

@@ -19,12 +19,15 @@ firm_list_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/short_firmlist.cs
 
 output_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/test_result.csv"
 
-scrape_log_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/src/log.txt"
-
 scrape_status_location = "/Users/luyuxuan/Desktop/scrape/Scraptiva/src/scrape_status.json"
 
-entries_to_process = 5  # need to be less than 20
+entries_to_process = 2
 
-process_times = 3
+process_times = 1
 
 headless = False
+
+
+if __name__ == "__main__":
+    from src.Processor import process
+    process()
