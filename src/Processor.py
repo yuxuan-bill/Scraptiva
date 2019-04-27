@@ -1,3 +1,5 @@
+# Processor controls the overall logic of scraping.
+
 import csv
 import json
 from src.SeleniumActions import *
@@ -5,8 +7,9 @@ from src.FirmListGenerator import generate_firm_list
 import os
 
 
-# Process several entries in the given firm list, the exact number of entries to process is specified in config.
-# firm_list_file: firm list file location, output_file: the result file this process will write to
+# Get the next several entries to process in the given firm list, the exact number of entries
+# to process is specified in config. If some of the previously scraped entries have errors, add
+# them to the process_list first.
 def get_process_list():
     process_list = list()
     with open(config.firm_list_location, 'r') as firm_list:
@@ -33,7 +36,7 @@ def get_process_list():
     return process_list
 
 
-# initiate files to start with
+# initiate output file and scrape status file
 def init_process():
     with open(config.firm_list_location, 'r') as firm_list:
         firm_list_reader = csv.DictReader(firm_list)
@@ -83,4 +86,4 @@ def process():
         generate_firm_list(get_process_list(), driver)
     driver.quit()
 
-# TODO: 2. add quit function 3. add IO redirection
+# TODO: add quit function so that we can quit the program in the middle of the run without damaging file status

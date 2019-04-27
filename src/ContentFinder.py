@@ -9,8 +9,8 @@ from bs4 import BeautifulSoup
 from bs4 import element
 
 
-# WARNING: potential source of bug, since each article may have a different html format, and
-#          I haven't tested thoroughly on this.
+# WARNING: known source of bug. The article pages on Factiva has slightly different formats, which
+#          is why this method may results in exception.
 # html: a string that stores the page source code
 # return: a dictionary of content information about the article, in the form
 #       {Date: --, Time: --, Title: --, Source: --, Content: --}, paragraphs are separated using ' | '

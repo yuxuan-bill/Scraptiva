@@ -1,9 +1,12 @@
+# Uses selenium chrome driver to perform actions on Factiva web pages.
+
 import src.config as config
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from time import sleep
 
 
+# initiate a new chrome driver
 def get_chrome_driver():
     options = webdriver.ChromeOptions()
     # the following two options are added so that headless can work on mac
@@ -15,6 +18,7 @@ def get_chrome_driver():
     return driver
 
 
+# based on the search criteria specified in config, enter the search information into Factiva.
 def enter_search_criteria(conm, role, driver):
 
     # Enter elements in search box
@@ -37,6 +41,9 @@ def enter_search_criteria(conm, role, driver):
         element.send_keys(source)
         sleep(2)
         element.send_keys(Keys.ARROW_DOWN)
+
+        # based on the choice of article source, the source we want does not necessary
+        # be the first one on the dropdown list. So when adding additional sources, check it on Factiva first
         if source == "Fortune":
             for i in range(4):
                 element.send_keys(Keys.ARROW_DOWN)
