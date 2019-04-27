@@ -1,9 +1,0 @@
-venv/
-experiment/
-__pycache__/
-short_firmlist.csv
-test_result.csv
-.idea/
-*.exe
-short_firmlist.csv
-test_result.csv
